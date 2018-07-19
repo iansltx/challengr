@@ -55,7 +55,7 @@ class ChallengeController extends Controller
 
     public function getAll(Request $request)
     {
-        return Challenge::all();
+        return Challenge::query()->orderByDesc('starts_at')->limit($request->input('limit', 50))->get();
     }
 
     public function get(int $id, Request $request)

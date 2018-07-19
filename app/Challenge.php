@@ -49,4 +49,56 @@ class Challenge extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function toArray()
+    {
+        return parent::toArray() + ['leaderboard' => $this->getLeaderboard()];
+    }
+
+    public function getLeaderboard()
+    {
+        return $this->duration ? $this->getDurationLeaderboard() : $this->getDistanceLeaderboard();
+    }
+
+    public function getDurationLeaderboard()
+    {
+        $arr = $this->users_joined->map(function(User $user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'duration_seconds' => $durationInSeconds = $user->activities()
+                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
+                    ->sum('duration'),
+                'distance_miles' => $user->activities()
+                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
+                    ->sum('distance_miles'),
+                'duration' => Util::secondsToTime($durationInSeconds),
+            ];
+        })->toArray();
+        usort($arr, function($a, $b) {
+            return $b['duration_seconds'] <=> $a['duration_seconds'];
+        });
+        return $arr;
+    }
+
+    public function getDistanceLeaderboard()
+    {
+        $arr = $this->users_joined->map(function(User $user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'duration_seconds' => $durationInSeconds = $user->activities()
+                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
+                    ->sum('duration'),
+                'distance_miles' => $user->activities()
+                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
+                    ->sum('distance_miles'),
+                'duration' => Util::secondsToTime($durationInSeconds),
+            ];
+        })->toArray();
+        usort($arr, function($a, $b) {
+            return $b['distance_miles'] <=> $a['distance_miles'];
+        });
+        return $arr;
+    }
 }
