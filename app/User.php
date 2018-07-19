@@ -54,7 +54,7 @@ class User extends Authenticatable
 
     public function challenges_joined()
     {
-        return $this->hasManyThrough(Challenge::class, ChallengeUser::class, 'user_id', 'challenge_id');
+        return $this->belongsToMany(Challenge::class);
     }
 
     public function challenges_created()

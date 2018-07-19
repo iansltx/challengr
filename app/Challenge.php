@@ -38,6 +38,6 @@ class Challenge extends Model
 
     public function users_joined()
     {
-        return $this->hasManyThrough(User::class, ChallengeUser::class, 'challenge_id', 'user_id');
+        return $this->belongsToMany(User::class);
     }
 }
