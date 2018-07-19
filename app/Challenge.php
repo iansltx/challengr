@@ -31,6 +31,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Challenge extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'distance_miles', 'duration', 'starts_at', 'ends_at'
+    ];
+
     public function creator()
     {
         return $this->belongsTo(User::class);

@@ -3,6 +3,7 @@
 namespace Challengr\Http\Controllers;
 
 use Challengr\Activity;
+use Challengr\Rules\Time;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,14 +25,23 @@ class ActivityController extends Controller
     public function create(Request $request)
     {
         Validator::make($data = $request->all(), [
-            'name' => 'required|string|max:255'
-            // TODO
+            'name' => 'required|string|max:255',
+            'distance_miles' => 'required|numeric|min:0.001',
+            'duration' => ['required', new Time()],
+            'started_at' => 'required|date'
         ])->validate();
 
-        return Activity::create([
-            'user_id' => $request->user()->id,
-            // TODO
-        ]);
+        $activity = new Activity();
+        $activity->user_id = $request->user()->id;
+
+        $activity->fill([
+            'name' => $data['name'],
+            'distance_miles' => $data['distance_miles'],
+            'duration' => $data['duration'],
+            'started_at' => $data['started_at']
+        ])->save();
+
+        return $activity;
     }
 
     public function get(int $id, Request $request)
@@ -43,6 +53,12 @@ class ActivityController extends Controller
         }
     }
 
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return Activity|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function update(int $id, Request $request)
     {
         try {
@@ -51,7 +67,14 @@ class ActivityController extends Controller
             return new JsonResponse(['error' => 'Not found'], 404);
         }
 
-        // TODO add update validation
+        Validator::make($data = $request->all(), [
+            'name' => 'string|max:255',
+            'distance_miles' => 'numeric|min:0.001',
+            'duration' => 'time',
+            'started_at' => 'date'
+        ])->validate();
+
+        $activity->fill($request->all())->save();
 
         return $activity;
     }

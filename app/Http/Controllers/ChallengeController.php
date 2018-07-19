@@ -3,8 +3,9 @@
 namespace Challengr\Http\Controllers;
 
 use Challengr\Challenge;
+use Challengr\Rules\Time;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,9 +16,9 @@ class ChallengeController extends Controller
     {
         return [
             'created' => Challenge::whereUserId($userId = $request->user()->id)->orderByDesc('created_at')->get(),
-            'joined' => Challenge::whereHas('users_joined', function(Builder $query) use ($userId) {
-                return $query->where('id', $userId);
-            })->orderByDesc('ends_at')
+            'joined' => Challenge::whereHas('users_joined', function(Builder $builder) use ($userId) {
+                return $builder->whereKey($userId);
+            })->orderByDesc('ends_at')->get()
         ];
     }
 
@@ -29,14 +30,23 @@ class ChallengeController extends Controller
     public function create(Request $request)
     {
         Validator::make($data = $request->all(), [
-            'name' => 'required|string|max:255'
-            // TODO
+            'name' => 'required|string|max:255',
+            'starts_at' => 'required|date',
+            'ends_at' => 'required|date|after:starts_at',
+            'distance_miles', 'numeric|min:0.001',
+            'duration' => new Time(),
         ])->validate();
 
-        $challenge = Challenge::create([
-            'user_id' => $request->user()->id,
-            // TODO
-        ]);
+        $challenge = new Challenge();
+        $challenge->user_id = $request->user()->id;
+
+        $challenge->fill([
+            'name' => $data['name'],
+            'starts_at' => $data['starts_at'],
+            'ends_at' => $data['ends_at'],
+            'duration' => $data['duration'] ?? null,
+            'distance_miles' => $data['distance_miles'] ?? null
+        ])->save();
 
         $challenge->users_joined()->attach($request->user()->id);
 
