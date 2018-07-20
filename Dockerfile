@@ -41,6 +41,5 @@ RUN npm install
 COPY composer* /var/app/
 RUN composer install --no-scripts --no-plugins --no-autoloader --no-dev && composer clear-cache
 COPY . /var/app
-RUN composer -o dump-autoload
-RUN php artisan config:cache
+RUN composer -o dump-autoload && chgrp -R nginx storage/logs && chmod -R g+w storage/logs
 RUN npm run production
