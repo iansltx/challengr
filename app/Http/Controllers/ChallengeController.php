@@ -29,7 +29,7 @@ class ChallengeController extends Controller
      */
     public function create(Request $request)
     {
-        Validator::make($data = $request->all(), [
+        Validator::make(array_filter($data = $request->all()), [
             'name' => 'required|string|max:255',
             'starts_at' => 'required|date',
             'ends_at' => 'required|date|after:starts_at',
