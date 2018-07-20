@@ -15,7 +15,7 @@ class Time implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match('/^((?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$)/', $value);
+        return preg_match('/^(\d\d:[0-5]\d:[0-5]\d$)/', $value);
     }
 
     /**
