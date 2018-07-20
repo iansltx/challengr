@@ -8,7 +8,7 @@ FROM alpine:3.8
 # install packages
 RUN apk add --no-cache curl ca-certificates openssl git nginx runit \
         php php-common php-curl php-ctype php-sockets php-session php7-intl \
-        php-dom php-xml php-phar php-mbstring php-pcntl php-json \
+        php-dom php-xml php-phar php-mbstring php-pcntl php-json php-fileinfo \
         php-opcache php-pdo php-pdo_mysql php-fpm php-tokenizer php-openssl \
         php-simplexml php-xmlwriter php-gd nodejs npm libpng-dev gifsicle \
         autoconf automake build-base libtool nasm
@@ -39,7 +39,7 @@ WORKDIR /var/app
 COPY package* /var/app/
 RUN npm install
 COPY composer* /var/app/
-RUN composer install --no-scripts --no-plugins --no-autoloader --no-dev && composer clear-cache
+RUN composer install --no-scripts --no-plugins --no-autoloader && composer clear-cache
 COPY . /var/app
-RUN composer -o dump-autoload && chgrp -R nginx storage/logs && chmod -R g+w storage/logs
+RUN composer -o dump-autoload && chgrp -R nginx storage && chmod -R g+w storage
 RUN npm run production
