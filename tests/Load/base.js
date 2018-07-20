@@ -113,9 +113,12 @@ export default function() {
     "activities": makeGet("api/me/activities")
   });
 
-  check(homeScreenResponses["me"], (res) => res.json().email === email) || fail("user profile email did not match");
-  check(homeScreenResponses["challenges"], (res) => res.status === 200) || fail("challenges list GET failed");
-  check(homeScreenResponses["activities"], (res) => res.status === 200) || fail("activities list GET failed");
+  check(homeScreenResponses["me"],
+    {"User profile loaded": (res) => res.json().email === email}) || fail("user profile email did not match");
+  check(homeScreenResponses["challenges"],
+    {"Challenges list loaded": (res) => res.status === 200}) || fail("challenges list GET failed");
+  check(homeScreenResponses["activities"],
+    {"Activities list loaded": (res) => res.status === 200}) || fail("activities list GET failed");
 
   activityListResponseTime.add(homeScreenResponses["activities"].timings.duration);
   challengeListResponseTime.add(homeScreenResponses["challenges"].timings.duration);
