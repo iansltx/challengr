@@ -39,7 +39,7 @@ WORKDIR /var/app
 COPY package* /var/app/
 RUN npm install
 COPY composer* /var/app/
-RUN composer install --no-scripts --no-plugins --no-autoloader --no-dev && composer clear-cache
+RUN composer install --no-scripts --no-plugins --no-autoloader && composer clear-cache
 COPY . /var/app
 RUN composer -o dump-autoload && chgrp -R nginx storage/logs && chmod -R g+w storage/logs
 RUN npm run production
