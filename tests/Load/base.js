@@ -1,6 +1,9 @@
 import http from "k6/http";
 import { check, fail, sleep } from "k6";
 import { Trend } from "k6/metrics";
+// noinspection JSFileReferences
+import { Normal } from "rawgit.com/iansltx/bf3f980eeedf29dfc53c71d5c62d9a15/raw/b67db941aa3effe5c75dede3be2b6054a77e7e4e/distributions.js";
+// Browserified "distributions" npm module, see https://github.com/AndreasMadsen/distributions
 
 const creds = open('./config.txt').split("\n"),
   baseURL = creds[0],
@@ -18,14 +21,17 @@ const creds = open('./config.txt').split("\n"),
   pAddAnotherActivity = 0.05,
   pIncludeChallengeDuration = 0.5,
   pIncludeChallengeMileage = 0.5,
+  // start with larger units than minutes/seconds and single miles for more accurate
+  // approximation of what challenges look like
   challengeMinHalfHours = 1,
   challengeMaxHalfHours = 80,
   challengeMinTenMiles = 1,
   challengeMaxTenMiles = 20,
 
-  challengeThinkTime = {min: 0, max: 0},
-  activityThinkTime = {min: 0, max: 0},
-  secondActivityThinkTime = {min: 0, max: 0},
+  challengeThinkTime = new Normal(30, 10),
+  activityThinkTime = new Normal(30, 10),
+  secondActivityThinkTime = new Normal(10, 3),
+  activitySpeed = new Normal(15, 3),
 
   challengeListResponseTime = new Trend("challenge_list_response_time"),
   activityListResponseTime = new Trend("activity_list_response_time"),
@@ -34,18 +40,23 @@ const creds = open('./config.txt').split("\n"),
   activityMinSeconds = 180,
   activityMaxSeconds = 10800,
   activityDateBounds = {
-    year: {min: 2018, max: 2018},
-    month: {min: 7, max: 7},
-    day: {min: 1, max: 20}
+    year: {min: 2019, max: 2019},
+    month: {min: 2, max: 2},
+    day: {min: 1, max: 28}
   };
 /** END OF TEST PARAMETERS **/
+
+function fromDist(dist)
+{
+    return Math.floor(dist.inv(Math.random()));
+}
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function getDistance(seconds) {
-  return getRandomInt(9, 22) * (seconds / 3600);
+  return activitySpeed.inv(Math.random()) * (seconds / 3600);
 }
 
 function secondsToTime(seconds) {
@@ -128,7 +139,7 @@ export default function() {
   if (pNextAction > (1 - pAbandonAfterHomeLoad)) {
     return; // abandon here
   } else if (pNextAction > (1 - pAbandonAfterHomeLoad - pAddChallenge)) {
-    sleep(getRandomInt(challengeThinkTime.min, challengeThinkTime.max)); // think time before creating challenge
+    sleep(fromDist(challengeThinkTime)); // think time before creating challenge
     let startMonth = getRandomInt(5, 9), endMonth = startMonth + getRandomInt(1, 2),
       challengeRes = http.post(baseURL + "api/challenges", JSON.stringify({
         "name": "Test Challenge",
@@ -157,7 +168,7 @@ export default function() {
     return;
   }
 
-  sleep(getRandomInt(activityThinkTime.min, activityThinkTime.max)); // more think time
+  sleep(fromDist(activityThinkTime));
 
   let activitySeconds = getRandomInt(activityMinSeconds, activityMaxSeconds),
     resActivity = http.post(baseURL + "api/me/activities", JSON.stringify({
@@ -175,7 +186,7 @@ export default function() {
     fail("activity create failed");
 
   if (pAddAnotherActivity > Math.random()) {
-    sleep(getRandomInt(secondActivityThinkTime.min, secondActivityThinkTime.max));
+    sleep(fromDist(secondActivityThinkTime));
 
     let activitySeconds = getRandomInt(activityMinSeconds, activityMaxSeconds),
       resActivity = http.post(baseURL + "api/me/activities", JSON.stringify({
