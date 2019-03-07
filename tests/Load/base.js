@@ -2,7 +2,7 @@ import http from "k6/http";
 import { check, fail, sleep } from "k6";
 import { Trend } from "k6/metrics";
 // noinspection JSFileReferences
-import { Normal } from "rawgit.com/iansltx/bf3f980eeedf29dfc53c71d5c62d9a15/raw/b67db941aa3effe5c75dede3be2b6054a77e7e4e/distributions.js";
+import { Normal } from "gist.githubusercontent.com/iansltx/bf3f980eeedf29dfc53c71d5c62d9a15/raw/b67db941aa3effe5c75dede3be2b6054a77e7e4e/distributions.js";
 // Browserified "distributions" npm module, see https://github.com/AndreasMadsen/distributions
 
 const creds = open('./config.txt').split("\n"),
