@@ -17,7 +17,7 @@ class Util
 
     public static function secondsToTime(int $durationInSeconds)
     {
-        return implode(':', array_map(function($item) {
+        return implode(':', array_map(function ($item) {
             return str_pad($item, 2, '0', STR_PAD_LEFT);
         }, [floor($durationInSeconds / 3600) % 60, floor($durationInSeconds / 60) % 60, $durationInSeconds % 60]));
     }

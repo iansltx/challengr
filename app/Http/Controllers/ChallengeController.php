@@ -18,9 +18,9 @@ class ChallengeController extends Controller
             'created' => Challenge::with('users_joined')
                 ->whereUserId($userId = $request->user()->id)->orderByDesc('created_at')->get(),
             'joined' => Challenge::with('users_joined')
-                ->whereHas('users_joined', function(Builder $builder) use ($userId) {
+                ->whereHas('users_joined', function (Builder $builder) use ($userId) {
                     return $builder->whereKey($userId);
-            })->orderByDesc('ends_at')->get()
+                })->orderByDesc('ends_at')->get()
         ];
     }
 
