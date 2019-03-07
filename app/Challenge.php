@@ -2,6 +2,7 @@
 
 namespace Challengr;
 
+use Challengr\Query\ChallengeStats;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -62,17 +63,15 @@ class Challenge extends Model
 
     public function getDurationLeaderboard()
     {
-        $arr = $this->users_joined->map(function(User $user) {
+        $stats = ChallengeStats::getForChallenge($this->id);
+
+        $arr = $this->users_joined->map(function(User $user) use ($stats) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
-                'duration_seconds' => $durationInSeconds = $user->activities()
-                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
-                    ->sum('duration'),
-                'distance_miles' => $user->activities()
-                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
-                    ->sum('distance_miles'),
-                'duration' => Util::secondsToTime($durationInSeconds),
+                'duration_seconds' => $stats[$user->id]['duration'] ?? 0,
+                'distance_miles' => $stats[$user->id]['distance_miles'] ?? 0,
+                'duration' => Util::secondsToTime($stats[$user->id]['duration'] ?? 0),
             ];
         })->toArray();
         usort($arr, function ($a, $b) {
@@ -83,17 +82,15 @@ class Challenge extends Model
 
     public function getDistanceLeaderboard()
     {
-        $arr = $this->users_joined->map(function(User $user) {
+        $stats = ChallengeStats::getForChallenge($this->id);
+
+        $arr = $this->users_joined->map(function(User $user) use ($stats) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
-                'duration_seconds' => $durationInSeconds = $user->activities()
-                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
-                    ->sum('duration'),
-                'distance_miles' => $user->activities()
-                    ->whereBetween('started_at', [$this->starts_at, $this->ends_at])
-                    ->sum('distance_miles'),
-                'duration' => Util::secondsToTime($durationInSeconds),
+                'duration_seconds' => $stats[$user->id]['duration'] ?? 0,
+                'distance_miles' => $stats[$user->id]['distance_miles'] ?? 0,
+                'duration' => Util::secondsToTime($stats[$user->id]['duration'] ?? 0),
             ];
         })->toArray();
         usort($arr, function ($a, $b) {
