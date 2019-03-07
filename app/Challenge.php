@@ -75,7 +75,7 @@ class Challenge extends Model
                 'duration' => Util::secondsToTime($durationInSeconds),
             ];
         })->toArray();
-        usort($arr, function($a, $b) {
+        usort($arr, function ($a, $b) {
             return $b['duration_seconds'] <=> $a['duration_seconds'];
         });
         return $arr;
@@ -96,7 +96,7 @@ class Challenge extends Model
                 'duration' => Util::secondsToTime($durationInSeconds),
             ];
         })->toArray();
-        usort($arr, function($a, $b) {
+        usort($arr, function ($a, $b) {
             return $b['distance_miles'] <=> $a['distance_miles'];
         });
         return $arr;
