@@ -65,7 +65,7 @@ class Challenge extends Model
     {
         $stats = ChallengeStats::getForChallenge($this->id);
 
-        $arr = $this->users_joined->map(function(User $user) use ($stats) {
+        $arr = $this->users_joined->map(function (User $user) use ($stats) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -74,7 +74,7 @@ class Challenge extends Model
                 'duration' => Util::secondsToTime($stats[$user->id]['duration'] ?? 0),
             ];
         })->toArray();
-        usort($arr, function($a, $b) {
+        usort($arr, function ($a, $b) {
             return $b['duration_seconds'] <=> $a['duration_seconds'];
         });
         return $arr;
@@ -84,7 +84,7 @@ class Challenge extends Model
     {
         $stats = ChallengeStats::getForChallenge($this->id);
 
-        $arr = $this->users_joined->map(function(User $user) use ($stats) {
+        $arr = $this->users_joined->map(function (User $user) use ($stats) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -93,7 +93,7 @@ class Challenge extends Model
                 'duration' => Util::secondsToTime($stats[$user->id]['duration'] ?? 0),
             ];
         })->toArray();
-        usort($arr, function($a, $b) {
+        usort($arr, function ($a, $b) {
             return $b['distance_miles'] <=> $a['distance_miles'];
         });
         return $arr;
