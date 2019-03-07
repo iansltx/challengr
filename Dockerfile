@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.9
 
 # Inspired by:
 # https://github.com/jimbojsb/laravel-docker/blob/master/Dockerfile
