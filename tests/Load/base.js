@@ -157,8 +157,8 @@ export default function() {
     let challengeListRes = http.get(baseURL + "api/me/challenges", params);
     check(challengeListRes, {"challenge is in user challenge list": (res) => {
         let json = res.json();
-        for (let i = 0; i < json.length; i++) {
-          if (json[i].id === challengeRes.json().id) {
+        for (let i = 0; i < json.created.length; i++) {
+          if (json.created[i].id === challengeRes.json().id) {
             return true;
           }
         }
