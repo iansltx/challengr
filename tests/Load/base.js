@@ -2,7 +2,7 @@ import http from "k6/http";
 import { check, fail, sleep } from "k6";
 import { Trend } from "k6/metrics";
 // noinspection JSFileReferences
-import { Normal } from "gist.githubusercontent.com/iansltx/bf3f980eeedf29dfc53c71d5c62d9a15/raw/b67db941aa3effe5c75dede3be2b6054a77e7e4e/distributions.js";
+import { Normal } from "https://gist.githubusercontent.com/iansltx/bf3f980eeedf29dfc53c71d5c62d9a15/raw/b67db941aa3effe5c75dede3be2b6054a77e7e4e/distributions.js";
 // Browserified "distributions" npm module, see https://github.com/AndreasMadsen/distributions
 
 const creds = open('./config.txt').split("\n"),
@@ -41,8 +41,8 @@ const creds = open('./config.txt').split("\n"),
   activityMaxSeconds = 10800,
   activityDateBounds = {
     year: {min: 2019, max: 2019},
-    month: {min: 2, max: 2},
-    day: {min: 1, max: 28}
+    month: {min: 9, max: 9},
+    day: {min: 1, max: 19}
   };
 /** END OF TEST PARAMETERS **/
 
