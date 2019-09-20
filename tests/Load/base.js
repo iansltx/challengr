@@ -71,7 +71,8 @@ function ymd(year, month, day) {
 }
 
 export default function() {
-  let isIncorrectLogin = Math.random() > pCorrectCredentials, email = emails[getRandomInt(0, emails.length)];
+  let isIncorrectLogin = Math.random() > pCorrectCredentials,
+      email = emails[getRandomInt(0, emails.length)];
 
   let resLogin = http.post(baseURL + "oauth/token", {
     "client_id": clientId,
@@ -86,7 +87,8 @@ export default function() {
   });
 
   if (isIncorrectLogin) {
-    check(resLogin, { "invalid login caught": (res) => res.status === 401 }) || fail("no 401 on invalid login");
+    check(resLogin, { "invalid login caught": (res) => res.status === 401 })
+      || fail("no 401 on invalid login");
 
     if (Math.random() > pRetryAfterFailedCreds) {
       return; // abandon on incorrect login
@@ -107,7 +109,8 @@ export default function() {
   }
 
   check(resLogin, {
-    "login succeeded": (res) => res.status === 200 && typeof res.json().access_token !== "undefined",
+    "login succeeded": (res) => res.status === 200
+      && typeof res.json().access_token !== "undefined",
   }) || fail("failed to log in");
 
   let params = { headers: {
@@ -125,11 +128,14 @@ export default function() {
   });
 
   check(homeScreenResponses["me"],
-    {"User profile loaded": (res) => res.json().email === email}) || fail("user profile email did not match");
+    {"User profile loaded": (res) => res.json().email === email})
+      || fail("user profile email did not match");
   check(homeScreenResponses["challenges"],
-    {"Challenges list loaded": (res) => res.status === 200}) || fail("challenges list GET failed");
+    {"Challenges list loaded": (res) => res.status === 200})
+      || fail("challenges list GET failed");
   check(homeScreenResponses["activities"],
-    {"Activities list loaded": (res) => res.status === 200}) || fail("activities list GET failed");
+    {"Activities list loaded": (res) => res.status === 200})
+      || fail("activities list GET failed");
 
   activityListResponseTime.add(homeScreenResponses["activities"].timings.duration);
   challengeListResponseTime.add(homeScreenResponses["challenges"].timings.duration);
@@ -151,8 +157,8 @@ export default function() {
           getRandomInt(challengeMinTenMiles, challengeMaxTenMiles) * 10
     }), params);
 
-    check(challengeRes, {"challenge was created": (res) => res.status === 201 && res.json().id}) ||
-      fail("challenge create failed");
+    check(challengeRes, {"challenge was created": (res) => res.status === 201 && res.json().id})
+      || fail("challenge create failed");
 
     let challengeListRes = http.get(baseURL + "api/me/challenges", params);
     check(challengeListRes, {"challenge is in user challenge list": (res) => {
