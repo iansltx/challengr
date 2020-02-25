@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine:3.11
 
 # Inspired by:
 # https://github.com/jimbojsb/laravel-docker/blob/master/Dockerfile
@@ -10,12 +10,13 @@ RUN apk add --no-cache curl ca-certificates openssl git nginx runit \
         php php-common php-curl php-ctype php-sockets php-session php7-intl \
         php-dom php-xml php-phar php-mbstring php-pcntl php-json php-fileinfo \
         php-opcache php-pdo php-pdo_mysql php-fpm php-tokenizer php-openssl \
-        php-simplexml php-xmlwriter php-gd nodejs npm libpng-dev gifsicle \
+        php-simplexml php-xmlwriter php-gd libpng-dev gifsicle \
         autoconf automake build-base libtool nasm
+# RUN apk add --no-cache nodejs npm
 
 # Install Composer
 RUN curl https://getcomposer.org/composer.phar > /usr/sbin/composer && chmod +x /usr/sbin/composer
-RUN npm i npm@latest -g
+# RUN npm i npm@latest -g
 
 # Copy configs
 COPY container/php.ini /etc/php7/php.ini
@@ -37,9 +38,9 @@ RUN mkdir /var/app
 WORKDIR /var/app
 
 COPY package* /var/app/
-RUN npm install
+# RUN npm install
 COPY composer* /var/app/
 RUN composer install --no-scripts --no-plugins --no-autoloader && composer clear-cache
 COPY . /var/app
 RUN composer -o dump-autoload && chgrp -R nginx storage && chmod -R g+w storage
-RUN npm run production
+# RUN npm run production
