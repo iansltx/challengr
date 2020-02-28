@@ -25,11 +25,11 @@ const [baseURL, clientId, clientSecret] = open('./config.txt').split("\n"),
     challengeMaxHalfHours = 80,
     challengeMinTenMiles = 1,
     challengeMaxTenMiles = 20,
+    activitySpeed = new Normal(15, 3),
 
     challengeThinkTime = new Normal(30, 10),
     activityThinkTime = new Normal(30, 10),
     secondActivityThinkTime = new Normal(10, 3),
-    activitySpeed = new Normal(15, 3),
 
     challengeListResponseTime = new Trend("challenge_list_response_time"),
     activityListResponseTime = new Trend("activity_list_response_time"),
