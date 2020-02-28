@@ -26,6 +26,8 @@ const [baseURL, clientId, clientSecret] = open('./config.txt').split("\n"),
     challengeMinTenMiles = 1,
     challengeMaxTenMiles = 20,
     activitySpeed = new Normal(15, 3),
+    activityMinSeconds = 180,
+    activityMaxSeconds = 10800,
 
     challengeThinkTime = new Normal(30, 10),
     activityThinkTime = new Normal(30, 10),
@@ -33,10 +35,7 @@ const [baseURL, clientId, clientSecret] = open('./config.txt').split("\n"),
 
     challengeListResponseTime = new Trend("challenge_list_response_time"),
     activityListResponseTime = new Trend("activity_list_response_time"),
-    userProfileResponseTime = new Trend("user_profile_response_time"),
-
-    activityMinSeconds = 180,
-    activityMaxSeconds = 10800;
+    userProfileResponseTime = new Trend("user_profile_response_time");
     /** END OF TEST PARAMETERS **/
 
 function fromDist(dist)
