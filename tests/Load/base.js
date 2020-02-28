@@ -145,11 +145,11 @@ export default function () {
         return; // abandon here
     } else if (pNextAction > (1 - pAbandonAfterHomeLoad - pAddChallenge)) {
         sleep(fromDist(challengeThinkTime)); // think time before creating challenge
-        let startMonth = getRandomInt(7, 9), endMonth = startMonth + getRandomInt(1, 2),
+        let startMonth = getRandomInt(1, 3), endMonth = startMonth + getRandomInt(1, 2),
             challengeRes = http.post(baseURL + "api/challenges", JSON.stringify({
                 "name": "Test Challenge",
-                "starts_at": "2019-0" + startMonth + "-01 00:00:00",
-                "ends_at": "2019-" + (endMonth >= 10 ? endMonth : ("0" + endMonth)) + "-01 00:00:00",
+                "starts_at": "2020-0" + startMonth + "-01 00:00:00",
+                "ends_at": "2020-" + (endMonth >= 10 ? endMonth : ("0" + endMonth)) + "-01 00:00:00",
                 "duration": Math.random() > pIncludeChallengeDuration ? null :
                     secondsToTime(getRandomInt(challengeMinHalfHours, challengeMaxHalfHours) * 1800),
                 "distance_miles": Math.random() > pIncludeChallengeMileage ? null :
